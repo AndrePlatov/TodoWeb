@@ -4,6 +4,7 @@
     self.userInfoUrl = "/api/Me";
     self.siteUrl = "/";
     self.taskUrl = "/api/Task"
+    self.addTask = "/api/Task/Add"
 
     // Route operations
 

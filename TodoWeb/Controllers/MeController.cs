@@ -15,36 +15,64 @@ using TodoWeb.Models;
 namespace TodoWeb.Controllers
 {
     [Authorize]
-    public class MeController : ApiController
+    public class TaskController : ApiController
     {
-        private ApplicationUserManager _userManager;
 
-        public MeController()
+        //        Get Tasks(all incomplete)
+        //      New Task
+        //      Get Task Details
+        //      Update Task Details
+        //      Complete Task(set status to complete)
+        //      Delete Task
+
+        ITaskRepository _repository;
+
+        public TaskController(ITaskRepository repository)
         {
+            _repository = repository;
+
+            //ObjectCache cache = MemoryCache.Default;
+            //List<ToDoTask> tasks = cache["toDoTasks"] as List<ToDoTask>;
+
+            //tasks = new List<ToDoTask>() { new ToDoTask { Id=0, Description = "", Name = "", Status = ToDoStatus.InComplete } };
+            //// persist
+            //cache["toDoTasks"] = tasks;
         }
 
-        public MeController(ApplicationUserManager userManager)
+        [HttpGet]
+        public IEnumerable<ToDoTask> Get()
         {
-            UserManager = userManager;
+            return _repository.Get();
         }
 
-        public ApplicationUserManager UserManager
+        [HttpGet]
+        public ToDoTask Get(int id)
         {
-            get
-            {
-                return _userManager ?? HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            }
-            private set
-            {
-                _userManager = value;
-            }
+            return _repository.GetById(id);
         }
 
-        // GET api/Me
-        public GetViewModel Get()
+        [HttpPost]
+        public void Add(ToDoTask newTask)
         {
-            var user = UserManager.FindById(User.Identity.GetUserId());
-            return new GetViewModel() { Hometown = user.Hometown };
+            _repository.Add(newTask);
+        }
+
+        [HttpPatch]
+        public void Update(ToDoTask modifiedTask)
+        {
+            _repository.Update(modifiedTask);
+        }
+
+        [HttpPatch]
+        public void Complete([FromUri] int idToComplete)
+        {
+            _repository.Complete(idToComplete);
+        }
+
+        [HttpDelete]
+        public void Delete(int idForDeletion)
+        {
+            _repository.Delete(idForDeletion);
         }
     }
 }

@@ -5,6 +5,11 @@ using System.Net.Http;
 using System.Web.Http;
 using Microsoft.Owin.Security.OAuth;
 using Newtonsoft.Json.Serialization;
+using Unity;
+using TodoWeb.Models;
+using Unity.Lifetime;
+using System.Net.Http.Headers;
+using TodoWeb.DI;
 
 namespace TodoWeb
 {
@@ -16,6 +21,11 @@ namespace TodoWeb
             // Configure Web API to use only bearer token authentication.
             config.SuppressDefaultHostAuthentication();
             config.Filters.Add(new HostAuthenticationFilter(OAuthDefaults.AuthenticationType));
+            var container = new UnityContainer();
+            container.RegisterType<ITaskRepository, TaskRepository>(new ContainerControlledLifetimeManager());
+            config.DependencyResolver = new UnityResolver(container);
+            config.Formatters.JsonFormatter.SupportedMediaTypes
+                .Add(new MediaTypeHeaderValue("text/html"));
 
             // Use camel case for JSON data.
             config.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
