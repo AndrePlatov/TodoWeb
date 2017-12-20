@@ -3,8 +3,11 @@
     // Routes
     self.userInfoUrl = "/api/Me";
     self.siteUrl = "/";
-    self.taskUrl = "/api/Task"
-    self.addTask = "/api/Task/Add"
+    self.taskUrl = "/api/Task";
+    self.addTask = "/api/Task/Add";
+    self.updateTask = "/api/Task/Update";
+    self.changeStatus = "/api/Task/ChangeStatus";
+    self.deleteTask = "/api/Task/Delete";
 
     // Route operations
 

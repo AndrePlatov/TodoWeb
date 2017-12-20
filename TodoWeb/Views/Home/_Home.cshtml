@@ -6,65 +6,170 @@
     <div class="col-md-12">
         <h2>Tasks</h2>
 
-        <a href='#' data-bind='click: addTask, visible: showAddTask'>Add Task</a>
+        <br />
 
-        <div id="editor" data-bind="visible: showEditor">
-              <fieldset style="background:#ffc;">
-                    <legend>Detail Editor</legend>
-                    @*<ul class="plain" data-bind="with:SelectedRecord()">
-                    <li>
-                        <a href="#" class="linkButton" data-bind="click: function() { pageViewModel.doSave($data,0) ;}">Save</a>
-                        <a href="#" class="linkButton" data-bind="click: function() { pageViewModel.showEditor(false) }">Cancel</a>
-                    </li>
-                    <li>
-                        <label>First Name</label>
-                        <input type="text" class="required" name="FirstName" data-bound="value: FirstName" />
-                    </li>
-                    <li>
-                        <label>Last Name</label>
-                        <input type="text" class="required" name="LastName" data-bound="value: LastName" />
-                    </li>
-                    <li>
-                        <label>Email</label>
-                        <input type="text" class="required" name="Email" data-bound="value: Email" />
-                    </li>
-                    <li>
-                        <label>Address</label>
-                        <input type="text" class="required" name="Address1" data-bound="value: Address1" />
-                    </li>
-                    <li>
-                        <label>City</label>
-                        <input type="text" class="required" name="City" data-bound="value: City" />
-                    </li>
-                    <li>
-                        <label>State</label>
-                        <input type="text" class="required" name="State" data-bound="value: State" />
-                    </li>
-                    <li>
-                        <a href="#" class="linkButton" data-bind="click: function() { pageViewModel.doSave($data,0) ;}">Save</a>
-                        <a href="#" class="linkButton" data-bind="click: function() { pageViewModel.showEditor(false); }">Cancel</a>
-                    </li>
-                </ul>*@
-                </fieldset>
-
-                <a href='#' data-bind='click: saveTask '>Save</a>
+        <div class="row">
+            <div class="col-sm-12">
+                <a href='#' data-bind='click: onAddTask, visible: showAddTask'>Add Task</a>
             </div>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" data-bind="checked: showCompletedTasks"> Show completed
+            </label>
+        </div>
 
+        <br />
 
-        <ul data-bind="foreach: tasks">
-            <li>
-                <div>
-                    <span data-bind="text: Name"> </span> 
-                    <a href='#' data-bind='click: view '>Vew Details</a>
-                    <a href='#' data-bind='click: view '>Complete</a>
-                    <a href='#' data-bind='click: view '>Delete</a>
+        <div class="row">
+            <div class="col-sm-12">
+                <div id="editor" data-bind="visible: showEditor">
+                    <form class="form-horizontal">
+                        <fieldset data-bind="with:currentTask">
+                            <legend>New Task</legend>
 
-                   
+                            <div class="form-group">
+                                <label for="Name" class="col-sm-2 control-label">
+                                    Name
+                                </label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control required" name="Name" data-bind="value: name" />
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+                                <label for="Description" class="col-sm-2 control-label">
+                                    Description
+                                </label>
+
+                                <div class="col-sm-10">
+                                    <textarea class="form-control" name="Description" data-bind="value: description"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group" data-bind="visible: $parent.showNewTaskEditorActions">
+                                <div class="col-sm-2">
+                                    <a href='#' class="pull-right btn btn-default btn-sm" data-bind='click: $parent.onNewTaskCancel '>Cancel</a>
+                                </div>
+
+                                <div class="col-sm-10">
+                                    <a href='#' class="btn btn-success btn-sm" data-bind='click: $parent.onNewTaskSave '>Save</a>
+                                </div>
+                            </div>
+
+                            <div class="form-group" data-bind="visible: $parent.showEditorActions">
+                                <div class="col-sm-2">
+                                    <a href='#' class="pull-right btn btn-default btn-sm" data-bind='click: $parent.onTaskEditingCancel '>Cancel</a>
+                                </div>
+
+                                <div class="col-sm-10">
+                                    <a href='#' class="btn btn-success btn-sm" data-bind='click: $parent.onSaveEditedTask '>Save</a>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
+
                 </div>
-            </li>
-        </ul>
-        
-    
+            </div>
+        </div>
+
+        <br />
+
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table table-hover table-bordered" data-bind="visible: showTasks">
+                    <thead>
+                        <tr>
+                            <td class="col-md-5">
+                                Name
+                            </td>
+                            <td class="col-md-7">
+                                Actions
+                            </td>
+                        </tr>
+                    </thead>
+
+                    <tbody data-bind="foreach: tasks">
+                        <tr data-bind="css: {'alert-success': status}">
+                            <td>
+                                <span data-bind="text: name"> </span>
+                            </td>
+
+                            <td>
+                                <a href='#' class="btn btn-default btn-sm" data-bind='click: $parent.onViewTask '>
+                                    <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>View Details
+                                </a>
+
+                                <a href='#' class="btn btn-primary btn-sm" data-bind='click: $parent.onEditTask '>
+                                    <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>Edit
+                                </a>
+
+                                <a href='#' class="btn btn-success btn-sm" data-bind='visible: !status, click: $parent.onCompleteTask '>
+                                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>Complete
+                                </a>
+
+                                <a href='#' class="btn btn-default btn-sm" data-bind='visible: status, click: $parent.onSetTaskIncomplete '>
+                                    <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>Incomplete
+                                </a>
+
+                                <a href='#' class="btn btn-danger btn-sm" data-bind='click: $parent.onDeleteTask '>
+                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>Delete
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="panel panel-default" data-bind="visible: showTaskDetails">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Task details:</h3>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="panel-body" data-bind="with: taskDetails">
+
+                            <br />
+
+                            <div class="col-xs-12 col-sm-2">
+                                <strong class="pull-right-sm">Name:</strong>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-10">
+                                <span data-bind="text: name"> </span>
+                            </div>
+
+                            <br />
+
+                            <div class="col-xs-12 col-sm-2">
+                                <strong class="pull-right-sm">Description:</strong>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-10">
+                                <span data-bind="text: description"> </span>
+                            </div>
+
+                            <br />
+
+                            <div class="action col-xs-12  col-sm-offset-2 col-sm-10">
+                                <a href='#' class="btn btn-default btn-sm" data-bind='click: $parent.onCloseDetails'>
+                                    <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>Back to list
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <br />
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <a href='#' data-bind='click: onAddTask, visible: showAddTask'>Add Task</a>
+            </div>
+        </div>
     </div>
 
 </div>

@@ -7,11 +7,10 @@ namespace TodoWeb.Models
 {
     public interface ITaskRepository
     {
-        IEnumerable<ToDoTask> Get();
-        void Add(ToDoTask newTask);
-        ToDoTask GetById(int id);
+        IEnumerable<ToDoTask> Get(bool includeCompleted);
+        ToDoTask Add(ToDoTask newTask);
         void Update(ToDoTask modifiedTask);
-        void Complete(int idToComplete);
+        void ChangeStatus(ToDoTask modifiedTask);
         void Delete(int idForDeletion);
     }
 }

@@ -34,3 +34,24 @@ textarea {
         padding: 10px 15px;
     }
 }
+
+a > span.glyphicon {
+    margin-right: 5px;
+}
+
+.panel-body > div {
+    margin-top: 5px;
+}
+
+.panel-body > div.action {
+    margin-top: 25px;
+}
+
+@media (min-width: 992px) {
+    .pull-right-sm {
+        float: right;
+    }
+    .panel-body {
+        margin-left: -80px;
+    }
+}

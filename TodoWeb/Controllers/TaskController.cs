@@ -30,31 +30,18 @@ namespace TodoWeb.Controllers
         public TaskController(ITaskRepository repository)
         {
             _repository = repository;
-
-            //ObjectCache cache = MemoryCache.Default;
-            //List<ToDoTask> tasks = cache["toDoTasks"] as List<ToDoTask>;
-
-            //tasks = new List<ToDoTask>() { new ToDoTask { Id=0, Description = "", Name = "", Status = ToDoStatus.InComplete } };
-            //// persist
-            //cache["toDoTasks"] = tasks;
         }
 
         [HttpGet]
-        public IEnumerable<ToDoTask> Get()
+        public IEnumerable<ToDoTask> Get([FromUri] bool includeCompleted = false)
         {
-            return _repository.Get();
+            return _repository.Get(includeCompleted);
         }
-
-        [HttpGet]
-        public ToDoTask Get(int id)
-        {
-            return _repository.GetById(id);
-        }
-
+        
         [HttpPost]
-        public void Add(ToDoTask newTask)
+        public ToDoTask Add(ToDoTask newTask)
         {
-            _repository.Add(newTask);
+           return _repository.Add(newTask);
         }
 
         [HttpPatch]
@@ -63,14 +50,15 @@ namespace TodoWeb.Controllers
             _repository.Update(modifiedTask);
         }
 
+        [Route("api/Task/ChangeStatus")]
         [HttpPatch]
-        public void Complete([FromUri] int idToComplete)
+        public void ChangeStatus(ToDoTask modifiedTask)
         {
-            _repository.Complete(idToComplete);
+            _repository.ChangeStatus(modifiedTask);
         }
 
         [HttpDelete]
-        public void Delete(int idForDeletion)
+        public void Delete([FromBody] int idForDeletion)
         {
             _repository.Delete(idForDeletion);
         }

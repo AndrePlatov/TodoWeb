@@ -13,25 +13,30 @@ namespace TodoWeb.Models
         //      Update Task Details
         //      Complete Task(set status to complete)
         //      Delete Task
-        public IEnumerable<ToDoTask> Get()
-        {
-
-            ObjectCache cache = MemoryCache.Default;
-            IEnumerable<ToDoTask> tasks = cache["toDoTasks"] as List<ToDoTask>;
-
-            return tasks;
-        }
-
-        public ToDoTask GetById(int id)
+        public IEnumerable<ToDoTask> Get(bool includeCompleted)
         {
             ObjectCache cache = MemoryCache.Default;
             List<ToDoTask> tasks = cache["toDoTasks"] as List<ToDoTask>;
-            ToDoTask task = tasks.Where(x => x.Id == id).FirstOrDefault();
+            if (tasks != null)
+            {
+                if (includeCompleted)
+                {
+                    return tasks;
+                }
+                else
+                {
+                    IEnumerable<ToDoTask> incompleteTasks = tasks.Where(x => x.Status == ToDoStatus.InComplete);
 
-            return task;
+                    return incompleteTasks;
+                }
+            }
+            else
+            {
+                return tasks;
+            }
         }
-
-        public void Add(ToDoTask newTask)
+        
+        public ToDoTask Add(ToDoTask newTask)
         {
             // get current list
             ObjectCache cache = MemoryCache.Default;
@@ -42,11 +47,14 @@ namespace TodoWeb.Models
             // add new task
             int newId = lastId == null ? 1 : (int)++lastId;
             newTask.Id = newId;
+            newTask.Status = ToDoStatus.InComplete;
             tasks.Add(newTask);
 
             // persist
             cache["toDoTasks"] = tasks;
             cache["lastId"] = newId;
+
+            return newTask;
         }
 
         public void Update(ToDoTask modifiedTask)
@@ -64,16 +72,16 @@ namespace TodoWeb.Models
             cache["toDoTasks"] = tasks;
         }
 
-        public void Complete(int idToComplete)
+        public void ChangeStatus(ToDoTask modifiedTask)
         {
 
             // Get task
             ObjectCache cache = MemoryCache.Default;
             List<ToDoTask> tasks = cache["toDoTasks"] as List<ToDoTask>;
-            ToDoTask task = tasks.Where(x => x.Id == idToComplete).FirstOrDefault();
+            ToDoTask task = tasks.Where(x => x.Id == modifiedTask.Id).FirstOrDefault();
 
             // update
-            task.Status = ToDoStatus.Complete;
+            task.Status = modifiedTask.Status;
 
             // persist
             cache["toDoTasks"] = tasks;
